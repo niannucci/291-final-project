@@ -10,13 +10,31 @@ a short, one paragraph explanation of your project. The abstract should not cons
 # Introduction
 an overview of your project. In a few paragraphs, you should explain clearly and precisely what your research question is, why it is interesting, and what contribution you have made towards answering that question. You should give an overview of the specifics of your model, but not the full details. Most readers never make it past the introduction, so this is your chance to hook the reader, and is in many ways the most important part of the paper!
 
-```{r}
+The purpose of our project is to predict the average number of hate crimes per 100k people based on the demographics of a group. Which demographic has more influence on the number of reported hate crimes? Will populations with higher proportions of non-white people have more or less reported hate crimes? Does education or poverty have more of an influence on the number of reported hate crimes and are they correlated in anyway? Does the proportion of Trump voters in a population have an influence on the reported hate crimes?
 
+```{r}
+library(tidyverse)
+library(fivethirtyeight)
 ```
 
 
 # Data
 a brief description of your data set. What variables are included? Where did they come from? What are units of measurement? What is the population that was sampled? How was the sample collected? You should also include some basic univariate analysis.
+
+We are using the hate crimes dataset from the FiveThirtyEight package 
+(https://github.com/rudeboybert/fivethirtyeight/blob/master/data/hate_crimes.rda). It contains information regarding hate crime data and demographic data. This dataset has 51 rows (one for each state and DC), and 13 different variables that we could look at. For each state and DC, there is data on the proportion of the population that have been categorized into a certain demographic (i.e., race, poverty, education level).
+
+The population for this dataset is the entire US population, as it contains demographic data for each state in the US.
+
+The response variable that we will be looking at is avg_hatecrimes_per_100k_splc, which is the average number of hate crimes per 100,000 population according to the Southern Poverty Law Center in early November, 2016. None of the averages of hate crimes are excessively large, and most are a decimal value between 0 and 0.8, with one value that is 1.5.
+
+The explanatory variables that we will be examining are median_house_inc, which is the median household income for each state as of 2016 in US dollars, share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election, and share_non_white, which is the share of the population that is not white as of 2015.
+
+```{r}
+model <- lm(hate_crimes_per_100k_splc ~ share_white_poverty + share_vote_trump + share_white_poverty* share_vote_trump, data = hate_crimes)
+
+summary(model)
+```
 
 # Results 
 an explanation of what your model tells us about the research question. You should interpret coefficients in context and explain their relevance. What does your model tell us that we didn’t already know before? You may want to include negative results, but be careful about how you interpret them. For example, you may want to say something along the lines of: “we found no evidence that explanatory variable x is associated with response variable y,” or “explanatory variable x did not provide any additional explanatory power above what was already conveyed by explanatory variable z.” On other hand, you probably shouldn’t claim: “there is no relationship between x and y.”
