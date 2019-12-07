@@ -31,18 +31,16 @@ The response variable that we will be looking at is avg_hatecrimes_per_100k_splc
 The explanatory variables that we will be examining are median_house_inc, which is the median household income for each state as of 2016 in US dollars, share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election, and share_non_white, which is the share of the population that is not white as of 2015.
 
 ```{r}
-model <- lm(hate_crimes_per_100k_splc ~ share_white_poverty + share_vote_trump + share_white_poverty* share_vote_trump, data = hate_crimes)
+model <- lm(median_house_inc ~ share_vote_trump + share_white_poverty, data = hate_crimes)
 
 summary(model)
 
 residuals <- resid(model)
 plot(residuals)
 
-
-nested_model <-lm(hate_crimes_per_100k_splc ~ share_white_poverty, data = hate_crimes)
-full_model <-lm(hate_crimes_per_100k_splc ~ share_white_poverty + share_vote_trump, data = hate_crimes)
-
-anova(nested_model, full_model)
+predValues <- predict(model)
+plot(predValues, residuals)
+abline(0,0, col="red")
 ```
 Y = 1.9286 -11.3914(share_white_poverty) -3.4536(share_vote_trump) + 23.6822(share_white_poverty:share_vote_trump)  
 # Results 

@@ -13,27 +13,71 @@ library(fivethirtyeight)
 
 # SLR with individual variables
 ```{r}
-## median_house_inc -- significant
+## median_house_inc -- significant but low R2
 model_house_income <- lm(hate_crimes_per_100k_splc ~ median_house_inc, data = hate_crimes)
 summary(model_house_income)
 
-## share_pop_hs -- significant
+## share_pop_hs -- significant but low R2
 model_hs <- lm(hate_crimes_per_100k_splc ~ share_pop_hs, data = hate_crimes)
 summary(model_hs)
 
-## share_white_poverty -- not significant
+## share_white_poverty -- not significant, but low R2
 model_white_poverty <- lm(hate_crimes_per_100k_splc ~ share_white_poverty, data = hate_crimes)
 summary(model_white_poverty)
 
-## share_vote_trump -- significant
+## share_vote_trump -- significant- higher R2 (0.43)
 model_vote_trump <- lm(hate_crimes_per_100k_splc ~ share_vote_trump, data = hate_crimes)
 summary(model_vote_trump)
 
-## share_non_white -- not significant
+## share_non_white -- not significant and low R2
 model_non_white <- lm(hate_crimes_per_100k_splc ~ share_non_white, data = hate_crimes)
 summary(model_non_white)
 ```
 
+
+#Try SLR with other hate crime as Y variable
+```{r}
+## median_house_inc -- significant but low R2
+model_house_income2 <- lm(avg_hatecrimes_per_100k_fbi ~ median_house_inc, data = hate_crimes)
+summary(model_house_income2)
+
+## share_pop_hs -- not significant 
+model_hs2 <- lm(avg_hatecrimes_per_100k_fbi ~ share_pop_hs, data = hate_crimes)
+summary(model_hs2)
+
+## share_white_poverty -- significant, but low R2
+model_white_poverty2 <- lm(avg_hatecrimes_per_100k_fbi ~ share_white_poverty, data = hate_crimes)
+summary(model_white_poverty2)
+
+## share_vote_trump -- significant- higher R2 
+model_vote_trump2 <- lm(avg_hatecrimes_per_100k_fbi ~ share_vote_trump, data = hate_crimes)
+summary(model_vote_trump2)
+
+## share_non_white -- not significant and low R2
+model_non_white2 <- lm(avg_hatecrimes_per_100k_fbi ~ share_non_white, data = hate_crimes)
+summary(model_non_white2)
+
+
+##use median household inc as the response variable instead 
+#significant
+model_inc <- lm(median_house_inc ~ share_white_poverty, data = hate_crimes)
+summary(model_inc)
+
+#significant
+model_inc2 <- lm(median_house_inc ~ share_pop_hs, data = hate_crimes)
+summary(model_inc2)
+
+#significant
+model_inc3 <- lm(median_house_inc ~ share_vote_trump, data = hate_crimes)
+summary(model_inc3)
+
+#nested tests
+#significant - share white poverty DOES improve model
+nested_model <-lm(median_house_inc ~ share_vote_trump, data = hate_crimes)
+full_model <-lm(median_house_inc ~ share_vote_trump + share_white_poverty + share_pop_hs, data = hate_crimes)
+
+anova(nested_model, full_model)
+```
 
 # Correlation between predictor variables
 ```{r}
@@ -51,6 +95,16 @@ summary(model1)
 
 residuals <- resid(model1)
 plot(residuals)
+
+
+nested_model <-lm(avg_hatecrimes_per_100k_fbi ~ share_vote_trump, data = hate_crimes)
+full_model <-lm(avg_hatecrimes_per_100k_fbi ~ share_vote_trump + median_house_inc, data = hate_crimes)
+
+anova(nested_model, full_model)
+
+predValues <- predict(model)
+plot(predValues, residuals)
+abline(0,0, col="red")
 ```
 
 ## Model 2
