@@ -42,7 +42,11 @@ predValues <- predict(model)
 plot(predValues, residuals)
 abline(0,0, col="red")
 ```
-Y = 1.9286 -11.3914(share_white_poverty) -3.4536(share_vote_trump) + 23.6822(share_white_poverty:share_vote_trump)  
+Y = 87191 -16229(share_vote_trump) -261699(share_white_poverty)  
+For every one unit increase in share of votes for Trump, we predict median household income to decrease by 16229 U.S. dollars. For every one unit increase in share of whit epoverty, we predict median household income to decrease by 261699 U.S. dollars.
+
+Thus, we expect states with lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
+
 # Results 
 an explanation of what your model tells us about the research question. You should interpret coefficients in context and explain their relevance. What does your model tell us that we didn’t already know before? You may want to include negative results, but be careful about how you interpret them. For example, you may want to say something along the lines of: “we found no evidence that explanatory variable x is associated with response variable y,” or “explanatory variable x did not provide any additional explanatory power above what was already conveyed by explanatory variable z.” On other hand, you probably shouldn’t claim: “there is no relationship between x and y.”
 

@@ -74,7 +74,7 @@ summary(model_inc3)
 #nested tests
 #significant - share white poverty DOES improve model
 nested_model <-lm(median_house_inc ~ share_vote_trump, data = hate_crimes)
-full_model <-lm(median_house_inc ~ share_vote_trump + share_white_poverty + share_pop_hs, data = hate_crimes)
+full_model <-lm(median_house_inc ~ share_vote_trump + share_pop_hs, data = hate_crimes)
 
 anova(nested_model, full_model)
 ```
