@@ -26,15 +26,18 @@ We are using the hate crimes dataset from the FiveThirtyEight package
 
 The population for this dataset is the entire US population, as it contains demographic data for each state in the US.
 
-The response variable that we will be looking at is avg_hatecrimes_per_100k_splc, which is the average number of hate crimes per 100,000 population according to the Southern Poverty Law Center in early November, 2016. None of the averages of hate crimes are excessively large, and most are a decimal value between 0 and 0.8, with one value that is 1.5.
+The response variable that we will be looking at is median_household_inc, which is the median household income for a state in 2016 in USD. None of the values are excessively large or small, ranging between $35,521 and \$76,165.
 
-The explanatory variables that we will be examining are median_house_inc, which is the median household income for each state as of 2016 in US dollars, share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election, and share_non_white, which is the share of the population that is not white as of 2015.
+The explanatory variables that we will be examining are share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election.
 
+# Model - Regression Diagnostics
 ```{r}
-model <- lm(median_house_inc ~ share_vote_trump + share_white_poverty, data = hate_crimes)
-
+model <- lm(median_house_inc ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
 summary(model)
+```
 
+## Checking conditions
+``` {r}
 residuals <- resid(model)
 plot(residuals)
 
@@ -42,13 +45,30 @@ predValues <- predict(model)
 plot(predValues, residuals)
 abline(0,0, col="red")
 ```
-Y = 87191 -16229(share_vote_trump) -261699(share_white_poverty)  
-For every one unit increase in share of votes for Trump, we predict median household income to decrease by 16229 U.S. dollars. For every one unit increase in share of whit epoverty, we predict median household income to decrease by 261699 U.S. dollars.
 
-Thus, we expect states with lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
+## Nested F-tests
+```{r}
+nested_model1 <-lm(median_house_inc ~ share_pop_hs, data = hate_crimes)
+anova(nested_model, model)
 
-# Results 
+nested_model2 <- lm(median_house_inc ~ share_pop_hs + share_vote_trump, data = hate_crimes)
+anova(nested_model2, model)
+```
+
+$\hat{Y} = -5307 + 100579X_{share\_pop\_hs} - 21113X_{share\_vote\_trump} - 180230X_{share\_white\_poverty}$
+
+Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will increase by $100,579 USD.
+
+Holding constant the share of white residents who are living in poverty and the share of adults 25 and older with a high-school degree, we predict for every one unit increase in the share of the population who voted for Trump in the 2016 Presidential election, the median household income of a state will decrease by $21,113 USD.
+
+Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the median household income of a state will decrease by $180,230 USD.
+
+Thus, we expect states with a more educated population, lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
+
+
+# Results
 an explanation of what your model tells us about the research question. You should interpret coefficients in context and explain their relevance. What does your model tell us that we didn’t already know before? You may want to include negative results, but be careful about how you interpret them. For example, you may want to say something along the lines of: “we found no evidence that explanatory variable x is associated with response variable y,” or “explanatory variable x did not provide any additional explanatory power above what was already conveyed by explanatory variable z.” On other hand, you probably shouldn’t claim: “there is no relationship between x and y.”
+
 
 # Conclusion 
 a summary of your findings and a discussion of their limitations. First, remind the reader of the question that you originally set out to answer, and summarize your findings. Second, discuss the limitations of your model, and what could be done to improve it. You might also want to do the same for your data. This is your last opportunity to clarify the scope of your findings before a journalist misinterprets them and makes wild extrapolations! Protect yourself by being clear about what is not implied by your research.
