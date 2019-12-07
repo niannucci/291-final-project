@@ -5,4 +5,17 @@ date: "12/7/2019"
 output: html_document
 ---
 
+## Packages
+```{r}
+library(tidyverse)
+library(fivethirtyeight)
+```
+
+
+## Model
+```{r}
+model <- lm(hate_crimes_per_100k_splc ~ share_white_poverty + share_vote_trump + share_white_poverty* share_vote_trump, data = hate_crimes)
+
+summary(model)
+```
 
