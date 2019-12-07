@@ -11,11 +11,53 @@ library(tidyverse)
 library(fivethirtyeight)
 ```
 
-
-## Model
+# SLR with individual variables
 ```{r}
-model <- lm(hate_crimes_per_100k_splc ~ share_white_poverty + share_vote_trump + share_white_poverty* share_vote_trump, data = hate_crimes)
+## median_house_inc -- significant
+model_house_income <- lm(hate_crimes_per_100k_splc ~ median_house_inc, data = hate_crimes)
+summary(model_house_income)
 
-summary(model)
+## share_pop_hs -- significant
+model_hs <- lm(hate_crimes_per_100k_splc ~ share_pop_hs, data = hate_crimes)
+summary(model_hs)
+
+## share_white_poverty -- not significant
+model_white_poverty <- lm(hate_crimes_per_100k_splc ~ share_white_poverty, data = hate_crimes)
+summary(model_white_poverty)
+
+## share_vote_trump -- significant
+model_vote_trump <- lm(hate_crimes_per_100k_splc ~ share_vote_trump, data = hate_crimes)
+summary(model_vote_trump)
+
+## share_non_white -- not significant
+model_non_white <- lm(hate_crimes_per_100k_splc ~ share_non_white, data = hate_crimes)
+summary(model_non_white)
 ```
+
+
+# Correlation between predictor variables
+```{r}
+
+```
+
+
+
+## Model 1
+With white poverty and trump vote.
+```{r}
+model1 <- lm(hate_crimes_per_100k_splc ~ share_white_poverty + share_vote_trump + share_white_poverty* share_vote_trump, data = hate_crimes)
+
+summary(model1)
+
+residuals <- resid(model1)
+plot(residuals)
+```
+
+## Model 2
+```{r}
+model2 <- lm(hate_crimes_per_100k_splc ~ median_house_inc + share_pop_hs + share_white_poverty + share_vote_trump + share_non_white, data = hate_crimes)
+
+summary(model2)
+```
+
 
