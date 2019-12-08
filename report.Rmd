@@ -10,7 +10,7 @@ library(fivethirtyeight)
 ```
 
 # Abstract
-In this study we model median household income as an outcome of select factors involving high school education, poverty rates, and voting patterns. We find that our model has significant explanatory power for the selected variables when we employ a linear multiple regression framework. Our main takeaway from this study is that a combination of education, economic, and voting information can be effectively used to predict mconvention economic measures like median household income.
+In this study we model median household income as an outcome of select factors involving high school education, poverty rates, and voting patterns. We find that our model has significant explanatory power for the selected variables when we employ a linear multiple regression framework. Our main takeaway from this study is that a combination of education, economic, and voting information can be effectively used to predict conventional economic measures like median household income that offers narrow insight for the larger question of the relationship between uneducated, Trump-supporting Americans and their economic status.
 
 # Introduction
 The purpose of our project is to predict the median household income of a state based on the state demographics. Economists often use median household income to "determine the economic health of an area" and to understand where citizens "enjoy the highest quality of life." But what influences a state's median household income? What is the full picture?
