@@ -10,10 +10,10 @@ library(fivethirtyeight)
 ```
 
 # Abstract
-a short, one paragraph explanation of your project. The abstract should not consist of more than 5 or 6 sentences, but should relate what you studied and what you found. It need only convey a general sense of what you actually did. The purpose of the abstract is to give a prospective reader enough information to decide if they want to read the full paper.
+In this study we model median household income as an outcome of select factors involving high school education, poverty rates, and voting patterns. We find that our model has significant explanatory power for the selected variables when we employ a linear multiple regression framework. Our main takeaway from this study is that a combination of education, economic, and voting information can be effectively used to predict mconvention economic measures like median household income.
 
 # Introduction
-The purpose of our project is to predict the median household income of a state based on the demographics of it. Economists often use median household income to "determine the economic health of an area" and to understand where citizens "enjoy the highest quality of life." But what influences a state's median household income? What is the full picture?
+The purpose of our project is to predict the median household income of a state based on the state demographics. Economists often use median household income to "determine the economic health of an area" and to understand where citizens "enjoy the highest quality of life." But what influences a state's median household income? What is the full picture?
 
 What influence does the education of a population have on its median household income? Does political afiliation/views say something about a state's median household income? What is its relationship to white poverty? We hope to explore the answers in our report.
 
@@ -57,7 +57,7 @@ mean(residuals)
 ## Nested F-tests
 ```{r}
 nested_model1 <-lm(median_house_inc ~ share_pop_hs, data = hate_crimes)
-anova(nested_model, model)
+anova(nested_model1, model)
 
 nested_model2 <- lm(median_house_inc ~ share_pop_hs + share_vote_trump, data = hate_crimes)
 anova(nested_model2, model)
