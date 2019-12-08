@@ -13,7 +13,7 @@ library(fivethirtyeight)
 In this study we model median household income as an outcome of select factors involving high school education, poverty rates, and voting patterns. We find that our model has significant explanatory power for the selected variables when we employ a linear multiple regression framework. Our main takeaway from this study is that a combination of education, economic, and voting information can be effectively used to predict conventional economic measures like median household income that offers narrow insight for the larger question of the relationship between uneducated, Trump-supporting Americans and their economic status.
 
 # Introduction
-The purpose of our project is to predict the median household income of a state based on the state demographics. Economists often use median household income to "determine the economic health of an area" and to understand where citizens "enjoy the highest quality of life." But what influences a state's median household income? What is the full picture?
+The purpose of our project is to predict the median household income of a state based on the state demographics. Economists often use median household income to "determine the economic health of an area" and to understand where citizens "enjoy the highest quality of life" [^1]. But what influences a state's median household income? What is the full picture?
 
 What influence does the education of a population have on its median household income? Does political afiliation/views say something about a state's median household income? What is its relationship to white poverty? We hope to explore the answers in our report.
 
@@ -55,16 +55,25 @@ mean(residuals)
 ```
 
 ## Nested F-tests
+Our model is built off the relationship between median household income and share of adults 25 and older with a high-school degreee. The following nested F-tests were used to see if the additional variables (share_vote_trump and share_white_poverty) strengthen the model.
 ```{r}
 ## Do share_vote_trump and share_white_poverty add to the model?
 nested_model1 <- lm(median_house_inc ~ share_pop_hs, data = hate_crimes)
 anova(nested_model, model)
 
+## Does share_white_poverty add to the model?
 nested_model2 <- lm(median_house_inc ~ share_pop_hs + share_vote_trump, data = hate_crimes)
 anova(nested_model2, model)
 ```
+Both nested F-tests are significant, so the additional variables are necessary and strengthen our model.
 
+# Results
 $\hat{Y} = -5307 + 100579X_{share\_pop\_hs} - 21113X_{share\_vote\_trump} - 180230X_{share\_white\_poverty}$
+
+```{r}
+summary(model)
+```
+78.89% of the variance in median household income is explained by our model with the variables share_pop_hs, share_vote_trump, and share_white_poverty.
 
 Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will increase by $100,579 USD.
 
@@ -72,16 +81,12 @@ Holding constant the share of white residents who are living in poverty and the 
 
 Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the median household income of a state will decrease by $180,230 USD.
 
-Thus, we expect states with a more educated population, lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
-
-
-# Results
-an explanation of what your model tells us about the research question. You should interpret coefficients in context and explain their relevance. What does your model tell us that we didn’t already know before? You may want to include negative results, but be careful about how you interpret them. For example, you may want to say something along the lines of: “we found no evidence that explanatory variable x is associated with response variable y,” or “explanatory variable x did not provide any additional explanatory power above what was already conveyed by explanatory variable z.” On other hand, you probably shouldn’t claim: “there is no relationship between x and y.”
+Thus, we expect states with a more educated population, lower poverty rates and lower share of votes for Trump to have higher median household incomes.
 
 
 # Conclusion 
 a summary of your findings and a discussion of their limitations. First, remind the reader of the question that you originally set out to answer, and summarize your findings. Second, discuss the limitations of your model, and what could be done to improve it. You might also want to do the same for your data. This is your last opportunity to clarify the scope of your findings before a journalist misinterprets them and makes wild extrapolations! Protect yourself by being clear about what is not implied by your research.
 
 # Works Cited
-(Household Income)[https://www.investopedia.com/terms/h/household_income.asp]
+[^1]: [Household Income](https://www.investopedia.com/terms/h/household_income.asp)
 
