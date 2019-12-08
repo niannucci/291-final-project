@@ -41,6 +41,17 @@ plot(residuals)
 predValues <- predict(model)
 plot(predValues, residuals)
 abline(0,0, col="red")
+
+#test zero mean and normality of residuals
+hist(residuals)
+
+qqnorm(residuals, pch = 19, col = "blue")
+
+shapiro.test(residuals)
+ks.test(residuals, "pnorm")
+
+mean(residuals)
+
 ```
 
 ## Nested F-tests
