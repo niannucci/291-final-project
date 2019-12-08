@@ -7,20 +7,19 @@ output: html_document
 ```{r Packages, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 library(tidyverse)
 library(fivethirtyeight)
-attach(hate_crimes)
+library(car)
 ```
 
 # Abstract
 In this study we model median household income as an outcome of select factors involving high school education, poverty rates, and voting patterns. We find that our model has significant explanatory power for the selected variables when we employ a linear multiple regression framework. Our main takeaway from this study is that a combination of education, economic, and voting information can be effectively used to predict conventional economic measures like median household income that offers narrow insight for the larger question of the relationship between uneducated, Trump-supporting Americans and their economic status.
 
 # Introduction
-The purpose of our project is to predict the median household income of a state based on the state demographics. Economists often use median household income to "determine the economic health of an area" and to understand where citizens "enjoy the highest quality of life." But what influences a state's median household income? What is the full picture?
+The purpose of our project is to predict the median household income of a state based on the state demographics. Economists often use median household income to "determine the economic health of an area" and to understand where citizens "enjoy the highest quality of life"[^1]. But what influences a state's median household income? What is the full picture?
 
 What influence does the education of a population have on its median household income? Does political afiliation/views say something about a state's median household income? What is its relationship to white poverty? We hope to explore the answers in our report.
 
 # Data
-We are using the hate crimes dataset from the FiveThirtyEight package 
-(https://github.com/rudeboybert/fivethirtyeight/blob/master/data/hate_crimes.rda). It contains information regarding hate crime data and demographic data. This dataset has 51 rows (one for each state and DC), and 13 different variables that we could look at. For each state and DC, there is data on the proportion of the population that have been categorized into a certain demographic (i.e., race, poverty, education level).
+We are using the hate crimes dataset from the [FiveThirtyEight package](https://github.com/rudeboybert/fivethirtyeight/blob/master/data/hate_crimes.rda). It contains information regarding hate crime data and demographic data. This dataset has 51 rows (one for each state and DC), and 13 different variables that we could look at. For each state and DC, there is data on the proportion of the population that have been categorized into a certain demographic (i.e., race, poverty, education level).
 
 The population for this dataset is the entire US population, as it contains demographic data for each state in the US.
 
@@ -35,64 +34,86 @@ summary(model)
 ```
 
 ## Checking conditions
-``` {r}
-#test linearity, homoskedascity, zero mean, and normality of residuals
+To test the assumptions of Multiple Linear Regression, we perform several diagnostic tests for linearity, independence, homoscedascity, and normality and zero mean of residuals.
 
+### Linearity & Homoscedascity*
+```{r}
 residuals <- resid(model)
-plot(residuals)
-
 predValues <- predict(model)
+
 plot(predValues, residuals)
 abline(0,0, col="red")
+```
 
+The residuals are fairly linear, however they are not strongly homoscedastic.
+
+### Normality*
+```{r}
 hist(residuals)
 
 qqnorm(residuals, pch = 19, col = "blue")
 
 shapiro.test(residuals)
 ks.test(residuals, "pnorm")
-
-mean(residuals)
-
-#test multicollinearity
-
-cor(share_white_poverty, share_pop_hs)
-cor(share_white_poverty, share_vote_trump)
-cor(share_pop_hs, share_vote_trump)
-
 ```
 
-## Nested F-tests
+### Zero Mean
 ```{r}
-nested_model1 <-lm(median_house_inc ~ share_pop_hs, data = hate_crimes)
+plot(residuals)
+abline(0,0, col = "red")
+mean(residuals)
+```
+Our model passes the zero mean assumption as the mean of the residuals is very close to 0.
+
+### Multicollinearity
+``` {r}
+data <- hate_crimes %>% 
+  select(median_house_inc, share_pop_hs, share_vote_trump, share_white_poverty)
+
+cor(data)
+vif(model)
+
+```
+To test for multicollinearity, we employed correlation and VIF tests. The Pearson correlation coefficient for the predictors "Share of White residents in poverty" and "Share of adults 25 and older with a high school diploma" is -0.49, the correlation coefficient for the predictors "Share of White residents in Poverty" and "Share of population that voted for Trump" is 0.55, correlation coefficient for the predictors "Share of adults 25 and older with a high school diploma" and "Share of population that voted for Trump" is -0.15. 
+
+Between all of our predictors, the highest magnitude Pearson correlation coefficient is 0.55, which indicates only moderate positive linear correlation. When we conduct VIF tests for each predictor variable, each VIF is less than 5 therefore there is no significant multicolinearity. Therefore we elect to keep all predictors in the final model.
+
+## Nested F-tests
+We build our model off the relationship between median household income and the share of adults who are 25 and older. We use nested F-tests to determine if the addition of the share of the population who voted for Trump and the share of white residents who are living in povert strengthen the model.
+```{r}
+## Do share_vote_trump and share_white_poverty add to the model?
+nested_model1 <- lm(median_house_inc ~ share_pop_hs, data = hate_crimes)
 anova(nested_model1, model)
 
+## Does share_white_poverty add to the model?
 nested_model2 <- lm(median_house_inc ~ share_pop_hs + share_vote_trump, data = hate_crimes)
 anova(nested_model2, model)
 ```
 
-$\hat{Y} = -5307 + 100579X_{share\_pop\_hs} - 21113X_{share\_vote\_trump} - 180230X_{share\_white\_poverty}$
+Both nested F-tests have significant results therefore the additional variables are necessary to the model and we choose to continue to include them.
 
 # Results
-Our results show that the degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. 
+Our final model is:
 
-To test the assumptions of Multiple Linear Regression, we perform several diagnostic tests for linearity, independence, homoskedascity, and normality and zero mean of residuals.
+$\hat{Y} = -5307 + 100579X_{share\_pop\_hs} - 21113X_{share\_vote\_trump} - 180230X_{share\_white\_poverty}$
 
-To test for multicollinearity, we employed F-tests and correlation tests. The Pearson correlation coefficient for the predictors "Share of Whites in Poverty" and "Share of Population with High School Diploma" is -0.49, the correlation coefficient for the predictors "Share of Whites in Poverty" and "Share of Population that Voted for Trump" is 0.55, correlation coefficient for the predictors "Share of Population with High School Diploma" and "Share of Population that Voted for Trump" is -0.15. Between all of our predictors, the highest magnitude Pearson correlation coefficient is 0.55, which indicates only moderate positive linear correlation. Therefore we elect to keep all predictors in the final model in conjunction with the F tests of joint significance.
+```{r}
+summary(model)
+```
 
+The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **78.89%** of the variance in median household income can be explained by our model.
 
-Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will increase by $100,579 USD.
+Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will **increase** by $100,579 USD.
 
-Holding constant the share of white residents who are living in poverty and the share of adults 25 and older with a high-school degree, we predict for every one unit increase in the share of the population who voted for Trump in the 2016 Presidential election, the median household income of a state will decrease by $21,113 USD.
+Holding constant the share of white residents who are living in poverty and the share of adults 25 and older with a high-school degree, we predict for every one unit increase in the share of the population who voted for Trump in the 2016 Presidential election, the median household income of a state will **decrease** by $21,113 USD.
 
-Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the median household income of a state will decrease by $180,230 USD.
+Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the median household income of a state will **decrease** by $180,230 USD.
 
 Thus, we expect states with a more educated population, lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
-
-...
-
-...an explanation of what your model tells us about the research question. You should interpret coefficients in context and explain their relevance. What does your model tell us that we didn’t already know before? You may want to include negative results, but be careful about how you interpret them. For example, you may want to say something along the lines of: “we found no evidence that explanatory variable x is associated with response variable y,” or “explanatory variable x did not provide any additional explanatory power above what was already conveyed by explanatory variable z.” On other hand, you probably shouldn’t claim: “there is no relationship between x and y.”
 
 
 # Conclusion 
 a summary of your findings and a discussion of their limitations. First, remind the reader of the question that you originally set out to answer, and summarize your findings. Second, discuss the limitations of your model, and what could be done to improve it. You might also want to do the same for your data. This is your last opportunity to clarify the scope of your findings before a journalist misinterprets them and makes wild extrapolations! Protect yourself by being clear about what is not implied by your research.
+
+# Works Cited
+[^1]: [Household Income](https://www.investopedia.com/terms/h/household_income.asp)
