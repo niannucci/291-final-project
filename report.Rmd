@@ -23,7 +23,7 @@ We are using the hate crimes dataset from the [FiveThirtyEight package](https://
 
 The population for this dataset is the entire US population, as it contains demographic data for each state in the US.
 
-The response variable that we will be looking at is median_household_inc, which is the median household income for a state in 2016 in USD. None of the values are excessively large or small, ranging between $35,521 and \$76,165.
+The response variable that we will be looking at is median_house_inc, which is the median household income for a state in 2016 in USD. None of the values are excessively large or small, ranging between $35,521 and \$76,165.
 
 The explanatory variables that we will be examining are share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election.
 
