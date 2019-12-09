@@ -27,16 +27,19 @@ The response variable that we will be looking at is median_house_inc, which is t
 
 The explanatory variables that we will be examining are share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election.
 
-# Model - Regression Diagnostics
+# Building the Model
+Our goal is to fit a regression model of "Median household income" on "Share of adults 25 and older with a high school diploma", "Share of population that voted for Trump", and "Share of White residents in Poverty". We decided to use the following model.
 ```{r}
 model <- lm(median_house_inc ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
 summary(model)
 ```
 
-## Checking conditions
-To test the assumptions of Multiple Linear Regression, we perform several diagnostic tests for linearity, independence, homoscedascity, and normality and zero mean of residuals.
+Each explanatory variable has a significant p-value, therefore they each have significant influence over our response variable.
 
-### Linearity & Homoscedascity*
+## Checking conditions
+To test the assumptions of multiple linear regression, we perform several diagnostic tests for linearity, independence, homoscedascity, and normality and zero mean of residuals.
+
+### Linearity & Constant Variance*
 ```{r}
 residuals <- resid(model)
 predValues <- predict(model)
@@ -49,20 +52,16 @@ The residuals are fairly linear, however they are not strongly homoscedastic.
 
 ### Normality*
 ```{r}
-hist(residuals)
-
 qqnorm(residuals, pch = 19, col = "blue")
-
-shapiro.test(residuals)
-ks.test(residuals, "pnorm")
+qqline(residuals, col="red")
 ```
+
 
 ### Zero Mean
 ```{r}
-plot(residuals)
-abline(0,0, col = "red")
 mean(residuals)
 ```
+
 Our model passes the zero mean assumption as the mean of the residuals is very close to 0.
 
 ### Multicollinearity
@@ -70,11 +69,17 @@ Our model passes the zero mean assumption as the mean of the residuals is very c
 data <- hate_crimes %>% 
   select(median_house_inc, share_pop_hs, share_vote_trump, share_white_poverty)
 
+## Check correlation between variables
 cor(data)
+
+## Check VIFs of variables
 vif(model)
 
 ```
-To test for multicollinearity, we employed correlation and VIF tests. The Pearson correlation coefficient for the predictors "Share of White residents in poverty" and "Share of adults 25 and older with a high school diploma" is -0.49, the correlation coefficient for the predictors "Share of White residents in Poverty" and "Share of population that voted for Trump" is 0.55, correlation coefficient for the predictors "Share of adults 25 and older with a high school diploma" and "Share of population that voted for Trump" is -0.15. 
+
+To test for multicollinearity, we employed correlation and VIF tests.
+
+The Pearson correlation coefficient for the predictors "Share of White residents in poverty" and "Share of adults 25 and older with a high school diploma" is -0.49, the correlation coefficient for the predictors "Share of White residents in Poverty" and "Share of population that voted for Trump" is 0.55, and the correlation coefficient for the predictors "Share of adults 25 and older with a high school diploma" and "Share of population that voted for Trump" is -0.15. 
 
 Between all of our predictors, the highest magnitude Pearson correlation coefficient is 0.55, which indicates only moderate positive linear correlation. When we conduct VIF tests for each predictor variable, each VIF is less than 5 therefore there is no significant multicolinearity. Therefore we elect to keep all predictors in the final model.
 
@@ -96,11 +101,6 @@ Both nested F-tests have significant results therefore the additional variables 
 Our final model is:
 
 $$\hat{Y} = -5307 + 100579X_{share\_pop\_hs} - 21113X_{share\_vote\_trump} - 180230X_{share\_white\_poverty}$$
-
-```{r}
-summary(model)
-```
-
 The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **78.89%** of the variance in median household income can be explained by our model.
 
 Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will **increase** by $100,579 USD.
@@ -112,7 +112,7 @@ Holding constant the share of adults 25 and older with a high-school degree and 
 Thus, we expect states with a more educated population, lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
 
 
-# Conclusion 
+# Conclusion **
 a summary of your findings and a discussion of their limitations. First, remind the reader of the question that you originally set out to answer, and summarize your findings. Second, discuss the limitations of your model, and what could be done to improve it. You might also want to do the same for your data. This is your last opportunity to clarify the scope of your findings before a journalist misinterprets them and makes wild extrapolations! Protect yourself by being clear about what is not implied by your research.
 
 # Works Cited

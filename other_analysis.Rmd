@@ -114,4 +114,17 @@ model2 <- lm(hate_crimes_per_100k_splc ~ median_house_inc + share_pop_hs + share
 summary(model2)
 ```
 
+---
+
+## Unnecessary code from report
+```{r}
+## Normality
+hist(residuals)
+shapiro.test(residuals)
+ks.test(residuals, "pnorm")
+
+## Zero mean
+plot(residuals)
+abline(0,0, col = "red")
+```
 
