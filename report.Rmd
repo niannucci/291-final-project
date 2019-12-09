@@ -1,6 +1,6 @@
 ---
-title: "Final Project: Predicting reported hate crimes"
-author: Natalia Iannucci, Sunni Raleigh, Julia Bouzaher
+title: 'Final Project: Predicting reported hate crimes'
+author: "Natalia Iannucci, Sunni Raleigh, Julia Bouzaher"
 output: html_document
 ---
 
@@ -95,7 +95,7 @@ Both nested F-tests have significant results therefore the additional variables 
 # Results
 Our final model is:
 
-$\hat{Y} = -5307 + 100579X_{share\_pop\_hs} - 21113X_{share\_vote\_trump} - 180230X_{share\_white\_poverty}$
+$$\hat{Y} = -5307 + 100579X_{share\_pop\_hs} - 21113X_{share\_vote\_trump} - 180230X_{share\_white\_poverty}$$
 
 ```{r}
 summary(model)
