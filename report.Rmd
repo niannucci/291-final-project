@@ -105,11 +105,11 @@ Our final model is:
 $$\hat{Y} = 0.00004278 -0.000038305X_{share\_pop\_hs} + 0.000006717X_{share\_vote\_trump} + 0.00006362X_{share\_white\_poverty}$$
 The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **82.22%** of the variance in median household income can be explained by our model.
 
-Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will **increase** by $100,579 USD.
+Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the inverse of median household income of a state will **decrease** by $0.000038305 USD.
 
-Holding constant the share of white residents who are living in poverty and the share of adults 25 and older with a high-school degree, we predict for every one unit increase in the share of the population who voted for Trump in the 2016 Presidential election, the median household income of a state will **decrease** by $21,113 USD.
+Holding constant the share of white residents who are living in poverty and the share of adults 25 and older with a high-school degree, we predict for every one unit increase in the share of the population who voted for Trump in the 2016 Presidential election, the invererse of median household income of a state will **increase** by $0.000006717 USD.
 
-Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the median household income of a state will **decrease** by $180,230 USD.
+Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the inverse of the median household income of a state will **increase** by $0.0000636 USD.
 
 Thus, we expect states with a more educated population, lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
 
