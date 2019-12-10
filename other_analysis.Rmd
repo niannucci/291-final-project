@@ -128,3 +128,21 @@ plot(residuals)
 abline(0,0, col = "red")
 ```
 
+
+#trying to transform the Y variable
+```{r}
+model2 <- lm(log(median_house_inc) ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
+summary(model2)
+
+residuals2 <- resid(model2)
+predValues2 <- predict(model2)
+
+plot(predValues2, residuals2)
+abline(0,0, col="red")
+
+qqnorm(residuals2, pch = 19, col = "blue")
+qqline(residuals2, col="red")
+
+mean(residuals2)
+```
+
