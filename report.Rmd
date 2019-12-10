@@ -28,9 +28,9 @@ The response variable that we will be looking at is median_house_inc, which is t
 The explanatory variables that we will be examining are share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election.
 
 # Building the Model
-Our goal is to fit a regression model of "Median household income" on "Share of adults 25 and older with a high school diploma", "Share of population that voted for Trump", and "Share of White residents in Poverty". We transformed the Y variable by doing 1/median_house_inc, as without the transformation the conditions of normality and constant variance were violated. The transformation imporoved these conditions. We decided to use the following model.
+Our goal is to fit a regression model of "Median household income" on "Share of adults 25 and older with a high school diploma", "Share of population that voted for Trump", and "Share of White residents in Poverty". We transformed the Y variable by doing log(median_house_inc), as without the logarithmic transformation the conditions of normality and constant variance were violated. The transformation imporoved these conditions. We decided to use the following model.
 ```{r}
-model <- lm((1/median_house_inc) ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
+model <- lm(log(median_house_inc) ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
 summary(model)
 ```
 
@@ -81,7 +81,7 @@ Our model passes the zero mean assumption as the mean of the residuals is very c
 ```{r}
 data <- hate_crimes %>% 
   select(median_house_inc, share_pop_hs, share_vote_trump, share_white_poverty) %>%
-  mutate(median_house_inc = 1/median_house_inc)
+  mutate(median_house_inc = log(median_house_inc))
 
 ## Check correlation between variables
 cor(data)
@@ -115,20 +115,20 @@ Both nested F-tests have significant results therefore the additional variables 
 # Results
 Our final model is:
 
-$$1/\hat{Y} = 0.00004278 -0.000038305X_{share\_pop\_hs} + 0.000006717X_{share\_vote\_trump} + 0.00006362X_{share\_white\_poverty}$$
-The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **82.22%** of the variance in median household income can be explained by our model.
+$$log\hat{Y} = 9.7052 + 1.9442X_{share\_pop\_hs} - 0.3738 X_{share\_vote\_trump} - 3.3396 X_{share\_white\_poverty}$$
+The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **81.52%** of the variance in median household income can be explained by our model.
 
-Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the inverse of median household income of a state will **decrease** by $0.000038305 USD.
+Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will **increase** by about 599%.
 
-Holding constant the share of white residents who are living in poverty and the share of adults 25 and older with a high-school degree, we predict for every one unit increase in the share of the population who voted for Trump in the 2016 Presidential election, the invererse of median household income of a state will **increase** by $0.000006717 USD.
+Holding constant the share of white residents who are living in poverty and the share of adults 25 and older with a high-school degree, we predict for every one unit increase in the share of the population who voted for Trump in the 2016 Presidential election, the median household income of a state will **decrease** by about 45%.
 
-Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the inverse of the median household income of a state will **increase** by $0.0000636 USD.
+Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the median household income of a state will **decrease** by about 2721%.
 
 Thus, we expect states with a more educated population, lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
 
 
 # Conclusion 
-Based on our model, we found that we can use each state's information share of adults with a high school diploma, share of voters who voted for Trump in 2016, and share of the white population that is in poverty to predict the median household income for each state. Holding all other variables constant, while higher proportions of adults with high school diplomas are correlated to higher median household incomes, higher proportions of white populations in poverty and higher proportions of voters who voted for Trump are correlated to lower median household incomes. However, it is important to note that our model is limited. The adusted R-squared value of 0.8222 means that 17.78% of the variation in median household income is **not** explained by our model, but rather by other factors and conditions that are not considered in our model. Additionally, it is crucial to discuss the range of our data. The independent variables are measured in 'share' of a population; that is, ranging only from 0, being 0% of the population, to 1, being 100% of the population. Our dependent variable, media household income, has a much greater range, from $35,521 to \$76,165. This results in extremely large coefficients, as a one unit increase in any of the independent would result in a proportion greater than or equal to one (100%). Thus, it is important to note that unit increases in the independent variables are likely closer to 0.01 or 0.1, and should be though about as such. As a result, the coefficients should be interpreted this way as well. This explains why the coefficients are so large, as there will never actually be a one unit increase. 
+Based on our model, we found that we can use each state's information share of adults with a high school diploma, share of voters who voted for Trump in 2016, and share of the white population that is in poverty to predict the median household income for each state. Holding all other variables constant, while higher proportions of adults with high school diplomas are correlated to higher median household incomes, higher proportions of white populations in poverty and higher proportions of voters who voted for Trump are correlated to lower median household incomes. However, it is important to note that our model is limited. The adusted R-squared value of 0.8152 means that 18.48% of the variation in median household income is **not** explained by our model, but rather by other factors and conditions that are not considered in our model. Additionally, it is crucial to discuss the range of our data. The independent variables are measured in 'share' of a population; that is, ranging only from 0, being 0% of the population, to 1, being 100% of the population. Our dependent variable, media household income, has a much greater range, from $35,521 to \$76,165. This results in extremely large coefficients, as a one unit increase in any of the independent would result in a proportion greater than or equal to one (100%). Thus, it is important to note that unit increases in the independent variables are likely closer to 0.01 or 0.1, and should be though about as such. As a result, the coefficients should be interpreted this way as well. This explains why the coefficients are so large, as there will never actually be a one unit increase. 
 
 # Works Cited
 [^1]: [Household Income](https://www.investopedia.com/terms/h/household_income.asp)
