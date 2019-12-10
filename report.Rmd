@@ -16,7 +16,7 @@ In this study we model median household income as an outcome of select factors i
 # Introduction
 The purpose of our project is to predict the median household income of a state based on the state demographics. Economists often use median household income to "determine the economic health of an area" and to understand where citizens "enjoy the highest quality of life"[^1]. But what influences a state's median household income? What is the full picture?
 
-What influence does the education of a population have on its median household income? Does political afiliation/views say something about a state's median household income? What is its relationship to white poverty? We hope to explore the answers in our report.
+What influence does the education of a population have on its median household income? Does political affiliation/views say something about a state's median household income? What is its relationship to white poverty? We hope to explore the answers in our report.
 
 # Data
 We are using the hate crimes dataset from the [FiveThirtyEight package](https://github.com/rudeboybert/fivethirtyeight/blob/master/data/hate_crimes.rda). It contains information regarding hate crime data and demographic data. This dataset has 51 rows (one for each state and DC), and 13 different variables that we could look at. For each state and DC, there is data on the proportion of the population that have been categorized into a certain demographic (i.e., race, poverty, education level).
@@ -28,7 +28,7 @@ The response variable that we will be looking at is median_house_inc, which is t
 The explanatory variables that we will be examining are share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election.
 
 # Building the Model
-Our goal is to fit a regression model of "Median household income" on "Share of adults 25 and older with a high school diploma", "Share of population that voted for Trump", and "Share of White residents in Poverty". We transformed the Y variable by doing log(median_house_inc), as without the logarithmic transformation the conditions of normality and constant variance were violated. The transformation imporoved these conditions. We decided to use the following model.
+Our goal is to fit a regression model of "Median household income" on "Share of adults 25 and older with a high school diploma", "Share of the population that voted for Trump", and "Share of white residents living in Poverty". We decided to use the following model and will extrapolate on our decision in the following sections.
 ```{r}
 model <- lm(log(median_house_inc) ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
 summary(model)
@@ -37,7 +37,7 @@ summary(model)
 Each explanatory variable has a significant p-value, therefore they each have significant influence over our response variable.
 
 ## Transformation
-We used a transformation to build our model. Instead of using the following equation, we use the above. Thus the assumptions of multiple linear regression are more clearly met, the predictor variables are more significant and the $R^2$ is larger.
+We used a transformation to build our model. Instead of using the following equation, we use the **above**. We transformed the Y variable by doing log(median_house_inc). With the logarithmic transformation, the assumptions of the conditions of normality and constant variance are more clearly met, the predictor variables are more significant and the $R^2$ is larger.
 ```{r}
 og_model <- lm(median_house_inc ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
 summary(og_model)
@@ -92,15 +92,16 @@ vif(model)
 
 To test for multicollinearity, we employed correlation and VIF tests. 
 
-The Pearson correlation coefficient for the predictors "Share of White residents in poverty" and "Share of adults 25 and older with a high school diploma" is -0.49, the correlation coefficient for the predictors "Share of White residents in Poverty" and "Share of population that voted for Trump" is 0.55, and the correlation coefficient for the predictors "Share of adults 25 and older with a high school diploma" and "Share of population that voted for Trump" is -0.15. 
+The Pearson correlation coefficient for the predictors "Share of white residents living in poverty" and "Share of adults 25 and older with a high school diploma" is -0.49, the correlation coefficient for the predictors "Share of white residents living in Poverty" and "Share of the population that voted for Trump" is 0.55, and the correlation coefficient for the predictors "Share of adults 25 and older with a high school diploma" and "Share of population that voted for Trump" is -0.15. 
 
 Between our predictor variables, the highest magnitude Pearson correlation coefficient is 0.55, which indicates only moderate positive linear correlation. When we conduct VIF tests for each predictor variable, each VIF is less than 5 therefore there is no significant multicolinearity. Therefore we elect to keep all predictors in the final model.
 
+
 ## Nested F-tests
-We build our model off the relationship between median household income and "Share of adults 25 and older with a high school diploma". We use nested F-tests to determine if the addition of the share of the population who voted for Trump and the share of white residents who are living in povert strengthen the model.
+We build our model off the relationship between median household income and "Share of adults 25 and older with a high school diploma". We use nested F-tests to determine if the addition of "Share of the population that voted for Trump" and "Share of white residents living in poverty" strengthen the model.
 ```{r}
-nested_model1 <- lm((1/median_house_inc) ~ share_pop_hs, data = hate_crimes)
-nested_model2 <- lm((1/median_house_inc) ~ share_pop_hs + share_vote_trump, data = hate_crimes)
+nested_model1 <- lm(log(median_house_inc) ~ share_pop_hs, data = hate_crimes)
+nested_model2 <- lm(log(median_house_inc) ~ share_pop_hs + share_vote_trump, data = hate_crimes)
 
 ## Does share_vote_trump add to the model?
 anova(nested_model1, nested_model2)
@@ -116,19 +117,22 @@ Both nested F-tests have significant results therefore the additional variables 
 Our final model is:
 
 $$log\hat{Y} = 9.7052 + 1.9442X_{share\_pop\_hs} - 0.3738 X_{share\_vote\_trump} - 3.3396 X_{share\_white\_poverty}$$
+
 The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **81.52%** of the variance in median household income can be explained by our model.
 
-Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will **increase** by about 599%.
+Holding constant "Share of the population that voted for Trump" and "Share of white residents living in poverty", we predict for every one unit increase in "Share of adults 25 and older with a high school diploma", the median household income of a state will **increase** by about 599%.
 
-Holding constant the share of white residents who are living in poverty and the share of adults 25 and older with a high-school degree, we predict for every one unit increase in the share of the population who voted for Trump in the 2016 Presidential election, the median household income of a state will **decrease** by about 45%.
+Holding constant "Share of white residents living in poverty" and "Share of adults 25 and older with a high school diploma", we predict for every one unit increase in "Share of the population that voted for Trump", the median household income of a state will **decrease** by about 45%.
 
-Holding constant the share of adults 25 and older with a high-school degree and the share of the population who voted for Trump in the 2016 Presidential election, we predict for every one unit increase in the share of white residents who are living in poverty, the median household income of a state will **decrease** by about 2721%.
+Holding constant "Share of adults 25 and older with a high school diploma" and "Share of the population that voted for Trump", we predict for every one unit increase in "Share of white residents living in poverty", the median household income of a state will **decrease** by about 2721%.
 
 Thus, we expect states with a more educated population, lower poverty rates and lower share of votes for Trump to have higher median household incomes. 
 
 
 # Conclusion 
-Based on our model, we found that we can use each state's information share of adults with a high school diploma, share of voters who voted for Trump in 2016, and share of the white population that is in poverty to predict the median household income for each state. Holding all other variables constant, while higher proportions of adults with high school diplomas are correlated to higher median household incomes, higher proportions of white populations in poverty and higher proportions of voters who voted for Trump are correlated to lower median household incomes. However, it is important to note that our model is limited. The adusted R-squared value of 0.8152 means that 18.48% of the variation in median household income is **not** explained by our model, but rather by other factors and conditions that are not considered in our model. Additionally, it is crucial to discuss the range of our data. The independent variables are measured in 'share' of a population; that is, ranging only from 0, being 0% of the population, to 1, being 100% of the population. Our dependent variable, media household income, has a much greater range, from $35,521 to \$76,165. This results in extremely large coefficients, as a one unit increase in any of the independent would result in a proportion greater than or equal to one (100%). Thus, it is important to note that unit increases in the independent variables are likely closer to 0.01 or 0.1, and should be though about as such. As a result, the coefficients should be interpreted this way as well. This explains why the coefficients are so large, as there will never actually be a one unit increase. 
+Based on our model, we found that we can use each state's information "Share of adults 25 and older with a high school diploma", "Share of the population that voted for Trump", and "Share of white residents living in poverty" to predict the median household income for each state. Holding all other variables constant, while higher proportions of adults with high school diplomas are correlated to higher median household incomes, higher proportions of white populations in poverty and higher proportions of voters who voted for Trump are correlated to lower median household incomes. 
+
+However, it is important to note that our model is limited. The adusted R-squared value of 0.8152 means that 18.48% of the variation in median household income is **not** explained by our model, but rather by other factors and conditions that are not considered in our model. Additionally, it is crucial to discuss the range of our data. The independent variables are measured in 'share' of a population; that is, ranging only from 0, being 0% of the population, to 1, being 100% of the population. Our dependent variable, media household income, has a much greater range, from $35,521 to \$76,165. This results in extremely large coefficients, as a one unit increase in any of the independent would result in a proportion greater than or equal to one (100%). Thus, it is important to note that unit increases in the independent variables are likely closer to 0.01 or 0.1, and should be though about as such. As a result, the coefficients should be interpreted this way as well. This explains why the coefficients are so large, as there will never actually be a one unit increase. 
 
 # Works Cited
 [^1]: [Household Income](https://www.investopedia.com/terms/h/household_income.asp)
