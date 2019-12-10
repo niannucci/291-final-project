@@ -130,6 +130,7 @@ abline(0,0, col = "red")
 
 
 #trying to transform the Y variable
+Variables are more significant and there is a higher R squared.
 ```{r}
 model2 <- lm(log(median_house_inc) ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
 summary(model2)
