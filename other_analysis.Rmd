@@ -182,3 +182,15 @@ abline(0,0, col = "red")
 ```
 
 
+```{r}
+modelf <- lm((median_house_inc) ~ (share_pop_hs) + (share_vote_trump) + (share_white_poverty), data = hate_crimes)
+
+residuals <- resid(modelf)
+predValues <- predict(modelf)
+
+plot(predValues, residuals)
+abline(0,0, col="red")
+
+hist(residuals)
+```
+

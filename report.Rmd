@@ -36,10 +36,18 @@ summary(model)
 
 Each explanatory variable has a significant p-value, therefore they each have significant influence over our response variable.
 
+## Transformation
+We used a transformation to build our model. Instead of using the following equation, we use the above. Thus the assumptions of multiple linear regression are more clearly met, the predictor variables are more significant and the $R^2$ is larger.
+```{r}
+og_model <- lm(median_house_inc ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
+summary(og_model)
+```
+
+
 ## Checking conditions
 To test the assumptions of multiple linear regression, we perform several diagnostic tests for linearity, independence, homoscedascity, and normality and zero mean of residuals.
 
-### Linearity & Constant Variance*
+### Linearity & Constant Variance
 ```{r}
 residuals <- resid(model)
 predValues <- predict(model)
@@ -50,7 +58,7 @@ abline(0,0, col="red")
 
 The residuals are fairly linear, and appear to be homoscedastic and evenly spread out.
 
-### Normality*
+### Normality
 ```{r}
 qqnorm(residuals, pch = 19, col = "blue")
 qqline(residuals, col="red")
@@ -58,6 +66,7 @@ qqline(residuals, col="red")
 hist(residuals)
 shapiro.test(residuals)
 ```
+
 Our model is relatively normal, as most of the points lay along the Q-Q line. The histogram shows a relatively normal distribution, and the Shapiro-Wilkonson test 
 allows us to fail to reject the null hypothesis that the data is normal.
 
@@ -65,12 +74,14 @@ allows us to fail to reject the null hypothesis that the data is normal.
 ```{r}
 mean(residuals)
 ```
+
 Our model passes the zero mean assumption as the mean of the residuals is very close to 0.
 
 ### Multicollinearity
 ```{r}
 data <- hate_crimes %>% 
-  select(median_house_inc, share_pop_hs, share_vote_trump, share_white_poverty)
+  select(median_house_inc, share_pop_hs, share_vote_trump, share_white_poverty) %>%
+  mutate(median_house_inc = 1/median_house_inc)
 
 ## Check correlation between variables
 cor(data)
@@ -83,18 +94,20 @@ To test for multicollinearity, we employed correlation and VIF tests.
 
 The Pearson correlation coefficient for the predictors "Share of White residents in poverty" and "Share of adults 25 and older with a high school diploma" is -0.49, the correlation coefficient for the predictors "Share of White residents in Poverty" and "Share of population that voted for Trump" is 0.55, and the correlation coefficient for the predictors "Share of adults 25 and older with a high school diploma" and "Share of population that voted for Trump" is -0.15. 
 
-Between all of our predictors, the highest magnitude Pearson correlation coefficient is 0.55, which indicates only moderate positive linear correlation. When we conduct VIF tests for each predictor variable, each VIF is less than 5 therefore there is no significant multicolinearity. Therefore we elect to keep all predictors in the final model.
+Between our predictor variables, the highest magnitude Pearson correlation coefficient is 0.55, which indicates only moderate positive linear correlation. When we conduct VIF tests for each predictor variable, each VIF is less than 5 therefore there is no significant multicolinearity. Therefore we elect to keep all predictors in the final model.
 
 ## Nested F-tests
-We build our model off the relationship between median household income and the share of adults who are 25 and older. We use nested F-tests to determine if the addition of the share of the population who voted for Trump and the share of white residents who are living in povert strengthen the model.
+We build our model off the relationship between median household income and "Share of adults 25 and older with a high school diploma". We use nested F-tests to determine if the addition of the share of the population who voted for Trump and the share of white residents who are living in povert strengthen the model.
 ```{r}
-## Do share_vote_trump and share_white_poverty add to the model?
 nested_model1 <- lm((1/median_house_inc) ~ share_pop_hs, data = hate_crimes)
-anova(nested_model1, model)
-
-## Does share_white_poverty add to the model?
 nested_model2 <- lm((1/median_house_inc) ~ share_pop_hs + share_vote_trump, data = hate_crimes)
+
+## Does share_vote_trump add to the model?
+anova(nested_model1, nested_model2)
+
+## Do share_vote_trump and share_white_poverty add to the model?
 anova(nested_model2, model)
+
 ```
 
 Both nested F-tests have significant results therefore the additional variables are necessary to the model and we choose to continue to include them.
@@ -102,7 +115,7 @@ Both nested F-tests have significant results therefore the additional variables 
 # Results
 Our final model is:
 
-$$\hat{Y} = 0.00004278 -0.000038305X_{share\_pop\_hs} + 0.000006717X_{share\_vote\_trump} + 0.00006362X_{share\_white\_poverty}$$
+$$1/\hat{Y} = 0.00004278 -0.000038305X_{share\_pop\_hs} + 0.000006717X_{share\_vote\_trump} + 0.00006362X_{share\_white\_poverty}$$
 The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **82.22%** of the variance in median household income can be explained by our model.
 
 Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the inverse of median household income of a state will **decrease** by $0.000038305 USD.
