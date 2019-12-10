@@ -144,5 +144,40 @@ qqnorm(residuals2, pch = 19, col = "blue")
 qqline(residuals2, col="red")
 
 mean(residuals2)
+
+hist(residuals2)
+shapiro.test(residuals2)
+ks.test(residuals2, "pnorm")
+
+## Zero mean
+plot(residuals2)
+abline(0,0, col = "red")
 ```
+
+
+#trying to transform the Y variable
+```{r}
+model3 <- lm((median_house_inc)^(1/2) ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
+summary(model3)
+
+residuals3 <- resid(model3)
+predValues3 <- predict(model3)
+
+plot(predValues3, residuals3)
+abline(0,0, col="red")
+
+qqnorm(residuals3, pch = 19, col = "blue")
+qqline(residuals3, col="red")
+
+mean(residuals3)
+
+hist(residuals3)
+shapiro.test(residuals3)
+ks.test(residuals3, "pnorm")
+
+## Zero mean
+plot(residuals3)
+abline(0,0, col = "red")
+```
+
 
