@@ -157,7 +157,7 @@ abline(0,0, col = "red")
 
 #trying to transform the Y variable
 ```{r}
-model3 <- lm((median_house_inc)^(1/2) ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
+model3 <- lm(1/(median_house_inc) ~ (share_pop_hs) + (share_vote_trump) + (share_white_poverty), data = hate_crimes)
 summary(model3)
 
 residuals3 <- resid(model3)

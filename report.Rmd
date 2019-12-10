@@ -28,9 +28,9 @@ The response variable that we will be looking at is median_house_inc, which is t
 The explanatory variables that we will be examining are share_pop_hs, which is the proportion of adults 25 and older with a high-school degree as of 2009, share_white_poverty, which is the proportion of white residents who are living in poverty as of 2015, share_vote_trump, which is the proportion of the population who voted for Donald Trump in the 2016 U.S. Presidential election.
 
 # Building the Model
-Our goal is to fit a regression model of "Median household income" on "Share of adults 25 and older with a high school diploma", "Share of population that voted for Trump", and "Share of White residents in Poverty". We decided to use the following model.
+Our goal is to fit a regression model of "Median household income" on "Share of adults 25 and older with a high school diploma", "Share of population that voted for Trump", and "Share of White residents in Poverty". We transformed the Y variable by doing 1/median_house_inc, as without the transformation the conditions of normality and constant variance were violated. The transformation imporoved these conditions. We decided to use the following model.
 ```{r}
-model <- lm(median_house_inc ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
+model <- lm((1/median_house_inc) ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
 summary(model)
 ```
 
@@ -48,24 +48,27 @@ plot(predValues, residuals)
 abline(0,0, col="red")
 ```
 
-The residuals are fairly linear, however they are not strongly homoscedastic.
+The residuals are fairly linear, and appear to be homoscedastic and evenly spread out.
 
 ### Normality*
 ```{r}
 qqnorm(residuals, pch = 19, col = "blue")
 qqline(residuals, col="red")
-```
 
+hist(residuals)
+shapiro.test(residuals)
+```
+Our model is relatively normal, as most of the points lay along the Q-Q line. The histogram shows a relatively normal distribution, and the Shapiro-Wilkonson test 
+allows us to fail to reject the null hypothesis that the data is normal.
 
 ### Zero Mean
 ```{r}
 mean(residuals)
 ```
-
 Our model passes the zero mean assumption as the mean of the residuals is very close to 0.
 
 ### Multicollinearity
-``` {r}
+```{r}
 data <- hate_crimes %>% 
   select(median_house_inc, share_pop_hs, share_vote_trump, share_white_poverty)
 
@@ -74,10 +77,9 @@ cor(data)
 
 ## Check VIFs of variables
 vif(model)
-
 ```
 
-To test for multicollinearity, we employed correlation and VIF tests.
+To test for multicollinearity, we employed correlation and VIF tests. 
 
 The Pearson correlation coefficient for the predictors "Share of White residents in poverty" and "Share of adults 25 and older with a high school diploma" is -0.49, the correlation coefficient for the predictors "Share of White residents in Poverty" and "Share of population that voted for Trump" is 0.55, and the correlation coefficient for the predictors "Share of adults 25 and older with a high school diploma" and "Share of population that voted for Trump" is -0.15. 
 
@@ -87,11 +89,11 @@ Between all of our predictors, the highest magnitude Pearson correlation coeffic
 We build our model off the relationship between median household income and the share of adults who are 25 and older. We use nested F-tests to determine if the addition of the share of the population who voted for Trump and the share of white residents who are living in povert strengthen the model.
 ```{r}
 ## Do share_vote_trump and share_white_poverty add to the model?
-nested_model1 <- lm(median_house_inc ~ share_pop_hs, data = hate_crimes)
+nested_model1 <- lm((1/median_house_inc) ~ share_pop_hs, data = hate_crimes)
 anova(nested_model1, model)
 
 ## Does share_white_poverty add to the model?
-nested_model2 <- lm(median_house_inc ~ share_pop_hs + share_vote_trump, data = hate_crimes)
+nested_model2 <- lm((1/median_house_inc) ~ share_pop_hs + share_vote_trump, data = hate_crimes)
 anova(nested_model2, model)
 ```
 
@@ -100,8 +102,8 @@ Both nested F-tests have significant results therefore the additional variables 
 # Results
 Our final model is:
 
-$$\hat{Y} = -5307 + 100579X_{share\_pop\_hs} - 21113X_{share\_vote\_trump} - 180230X_{share\_white\_poverty}$$
-The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **78.89%** of the variance in median household income can be explained by our model.
+$$\hat{Y} = 0.00004278 -0.000038305X_{share\_pop\_hs} + 0.000006717X_{share\_vote\_trump} + 0.00006362X_{share\_white\_poverty}$$
+The degree of high school education, white poverty, and share of votes for Trump of a population possess a high degree of joint explanatory power for median household income. **82.22%** of the variance in median household income can be explained by our model.
 
 Holding constant the share of the population who voted for Trump in the 2016 Presidential election and share of white residents who are living in poverty, we predict for every one unit increase in the share of adults 25 and older with a high-school degree, the median household income of a state will **increase** by $100,579 USD.
 
