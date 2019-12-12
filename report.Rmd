@@ -1,5 +1,5 @@
 ---
-title: 'Final Project: Predicting reported hate crimes'
+title: 'Final Project: Predicting Median Household Income'
 author: "Natalia Iannucci, Sunni Raleigh, Julia Bouzaher"
 output: html_document
 ---
