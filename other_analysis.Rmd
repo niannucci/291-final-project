@@ -192,5 +192,7 @@ plot(predValues, residuals)
 abline(0,0, col="red")
 
 hist(residuals)
+
+shapiro.test(residuals)
 ```
 

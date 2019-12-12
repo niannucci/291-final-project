@@ -39,8 +39,8 @@ Each explanatory variable has a significant p-value, therefore they each have si
 ## Transformation
 We used a transformation to build our model. Instead of using the following equation, we use the **above**. We transformed the Y variable by doing log(median_house_inc). With the logarithmic transformation, the assumptions of the conditions of normality and constant variance are more clearly met, the predictor variables are more significant and the $R^2$ is larger.
 ```{r}
-og_model <- lm(median_house_inc ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
-summary(og_model)
+orig_model <- lm(median_house_inc ~ share_pop_hs + share_vote_trump + share_white_poverty, data = hate_crimes)
+summary(orig_model)
 ```
 
 
