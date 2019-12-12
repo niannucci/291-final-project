@@ -151,7 +151,8 @@ However, it is important to note that our model is limited. The adusted R-square
 Also, we are analysing our data at a state level which creates limits on what we can predict and apply our model to. By having a small population to pull from, there creates bias which could disenfrachise small communities in that state.
 
 
-Additionally, it is crucial to discuss the range of our data. The independent variables are measured in 'share' of a population; that is, ranging only from 0, being 0% of the population, to 1, being 100% of the population. Our dependent variable, media household income, has a much greater range, from $35,521 to \$76,165. This results in extremely large coefficients, as a one unit increase in any of the independent would result in a percentage greater than or equal to 100. Thus, it is important to note that unit increases in the independent variables are likely closer to 0.01 or 0.1, and should be though about as such. As a result, the coefficients should be interpreted this way as well. This explains why the coefficients are so large, as there will never actually be a one unit increase. 
+Additionally, it is crucial to discuss the range of our data. The independent variables are measured in 'share' of a population; that is, ranging only from 0, being 0% of the population, to 1, being 100% of the population. Our dependent variable, media household income, has a much greater range, from $35,521 to \$76,165. 
+
 
 # Works Cited
 [^1]: [Household Income](https://www.investopedia.com/terms/h/household_income.asp)
