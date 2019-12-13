@@ -150,8 +150,7 @@ Based on our model, we found that we can use each state's information "Share of 
 However, it is important to note that our model is limited. The adusted R-squared value of 0.8152 means that 18.48% of the variation in median household income is **not** explained by our model, but rather by other factors and conditions that are not considered in our model. 
 Also, we are analysing our data at a state level which creates limits on what we can predict and apply our model to. By having a small population to pull from, there creates bias which could disenfrachise small communities in that state.
 
-
-Additionally, it is crucial to discuss the range of our data. The independent variables are measured in 'share' of a population; that is, ranging only from 0, being 0% of the population, to 1, being 100% of the population. Our dependent variable, media household income, has a much greater range, from $35,521 to \$76,165. 
+Additionally, it is crucial to discuss the range of our data. The independent variables are measured in 'share' of a population; that is, ranging only from 0% of the population to 100% of the population. Our dependent variable, media household income, has a much greater range, from $35,521 to \$76,165. 
 
 
 # Works Cited
